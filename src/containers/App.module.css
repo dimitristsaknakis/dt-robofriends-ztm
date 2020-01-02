@@ -1,0 +1,16 @@
+/* Styling for the App component */
+
+/* copied from the cufonfonts.com css file of the sega font */
+@font-face {
+    font-family: 'SEGA LOGO FONT';
+    font-style: normal;
+    font-weight: normal;
+    src: local('SEGA LOGO FONT'), url('SEGA.woff') format('woff');
+}
+
+h1 {
+    font-family: "SEGA LOGO FONT";
+    font-weight: 200;  /* for font size see h1 in 'App.js' */
+    color: #0CCAC4;
+    letter-spacing: .2rem;
+}

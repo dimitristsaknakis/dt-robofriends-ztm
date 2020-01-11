@@ -11,6 +11,7 @@
 h1 {
     font-family: "SEGA LOGO FONT";
     font-weight: 200;  /* for font size see h1 in 'App.js' */
-    color: #0CCAC4;
+    /* color: #0CCAC4; */
+    color: rgba(255, 255, 255, 0.7);
     letter-spacing: .2rem;
 }

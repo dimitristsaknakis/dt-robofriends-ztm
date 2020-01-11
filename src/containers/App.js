@@ -7,13 +7,17 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import "./App.module.css";
 
 // Import Redux actions
-import { setSearchField } from "../actions";
+import { setSearchFieldA, requestRobotsA } from "../actions";
 
-// Tell App what state to listen to (the 'searchField' state from the
-// 'searchRobots' reducer)
+// Tell App what state to listen to
 const mapStateToProps = state => {
     return {
-        searchField: state.searchField // Temporarily bc only one reducer
+        // The searchField state slice from the searchRobotsR reducer
+        searchField: state.searchRobotsR.searchField,
+        // The state slice props of the requestRobotsR reducer
+        robots: state.requestRobotsR.robots,
+        isPending: state.requestRobotsR.isPending,
+        error: state.requestRobotsR.error
     }
 };
 
@@ -22,41 +26,32 @@ const mapDispatchToProps = dispatch => {
     return {
         // Accepts an event and returns the result of the dispatch of the
         // 'setSearchField' action with the input text passed to it, to the reducer
-        onSearchChange: event => dispatch(setSearchField(event.target.value))
+        onSearchChange: event => dispatch(setSearchFieldA(event.target.value)),
+        // Returns a func (the action). Same as '() => requestRobotsA(dispatch)
+        onRobotsChange: () => dispatch(requestRobotsA()) // action is a HO func
     }
 };
 
 
 class App extends Component {
-    constructor(props) {
-        super(props); // call parent class (Component) constructor
-        // Adding/creating state for App
-        this.state = {
-            robots: [],  // start out with empty array
-        }
-    };
 
     /* Lifecycle methods */
     componentDidMount() {        
-        // Get users from online API; set 'robots' state with them
-        fetch("https://jsonplaceholder.typicode.com/users")
-        .then(response => response.json()) // convert response obj to JSON
-        .then(users => this.setState({ robots: users })); // set 'robots' state to result
+        return this.props.onRobotsChange(); // 
     };
 
     
     render() {
-        const { robots } = this.state; // destructure from local state
         // Destructure from Redux state props
-        const { searchField, onSearchChange } = this.props;
+        const { robots, searchField, isPending, onSearchChange } = this.props;
 
-        // Filter robots array, return name of the one typed in searchfield
+        // Filter robots array, return names of the ones matching the searchfield
         const filteredRobots = robots.filter(robot => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase());
         });
 
         // If fetch() hasn't completed/resolved yet, show 'loading' msg
-        return !robots.length ?
+        return isPending ?
             <h1 className="tc">Loading...</h1> :
         (
             <div className="tc">
